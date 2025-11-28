@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️SafeTravel - Smart Tourist Safety</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind gray-50 */
+            color: #1f2937; /* Tailwind gray-800 */
+        }
+
+        /* Hero section gradient background */
+        .hero-bg {
+            background-color: #ffffff;
+            background-image: radial-gradient(#dbeafe 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Scroll-triggered animation classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* SOS button style */
+        .sos-button {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 1);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Feature card hover effect */
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-blue-600">🛡️TravelShield</a>
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#features" class="text-gray-600 hover:text-blue-600 font-medium">Features</a>
+                <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 font-medium">How It Works</a>
+                <a href="#testimonials" class="text-gray-600 hover:text-blue-600 font-medium">Testimonials</a>
+                <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 font-medium">Login</a>
+                <a href="dashboard.html" class="px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors">Get Started</a>
+            </div>
+             <button id="mobile-menu-button" class="md:hidden text-gray-800">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                 </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4 shadow-lg">
+             <a href="#features" class="block py-2 text-gray-600 hover:text-blue-600">Features</a>
+             <a href="#how-it-works" class="block py-2 text-gray-600 hover:text-blue-600">How It Works</a>
+             <a href="#testimonials" class="block py-2 text-gray-600 hover:text-blue-600">Testimonials</a>
+             <a href="dashboard.html" class="block py-2 text-gray-600 hover:text-blue-600">Login</a>
+             <a href="dashboard.html" class="block mt-2 w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Get Started</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="pt-32 pb-20 md:pt-40 md:pb-28 text-center hero-bg">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-4 reveal">
+                    Travel Smarter, Stay Safer
+                </h1>
+                <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-600 mb-8 reveal" style="transition-delay: 200ms;">
+                    Your personal safety companion for exploring the world with confidence. Get real-time alerts, emergency assistance, and local safety tips, all in one app.
+                </p>
+                <div class="flex justify-center space-x-4 reveal" style="transition-delay: 400ms;">
+                    <a href="dashboard.html" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105">
+                        Get Started Free
+                    </a>
+                    <a href="#features" class="bg-white text-gray-800 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition-transform transform hover:scale-105">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-sm font-bold uppercase text-blue-600 mb-2 reveal">Core Features</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900 reveal">Everything You Need for a Secure Trip</h3>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="p-8 bg-gray-50 rounded-xl shadow-sm transition-all duration-300 feature-card reveal">
+                        <div class="bg-blue-100 text-blue-600 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Real-time Safety Alerts</h4>
+                        <p class="text-gray-600">Receive instant notifications about local events, weather warnings, or safety concerns in your area.</p>
+                    </div>
+                    <div class="p-8 bg-gray-50 rounded-xl shadow-sm transition-all duration-300 feature-card reveal" style="transition-delay: 200ms;">
+                        <div class="bg-red-100 text-red-600 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">One-Tap Emergency SOS</h4>
+                        <p class="text-gray-600">Instantly alert your emergency contacts and local authorities with your location with a single tap.</p>
+                    </div>
+                    <div class="p-8 bg-gray-50 rounded-xl shadow-sm transition-all duration-300 feature-card reveal" style="transition-delay: 400ms;">
+                        <div class="bg-green-100 text-green-600 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 10l6-3m0 0l6-3" /></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Safe Zone Maps</h4>
+                        <p class="text-gray-600">Navigate new cities confidently with maps highlighting safe neighborhoods, verified hotels, and trusted services.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="reveal">
+                        <h2 class="text-sm font-bold uppercase text-blue-600 mb-2">How It Works</h2>
+                        <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Your Safety in 3 Simple Steps</h3>
+                        <ul class="space-y-6">
+                            <li class="flex items-start">
+                                <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold mr-4">1</div>
+                                <p class="text-gray-600"><strong class="text-gray-800">Set Up Your Profile.</strong> Add your trip details and emergency contacts so we can provide personalized alerts.</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold mr-4">2</div>
+                                <p class="text-gray-600"><strong class="text-gray-800">Explore with Peace of Mind.</strong> Keep the app running in the background to receive alerts and access safety features.</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold mr-4">3</div>
+                                <p class="text-gray-600"><strong class="text-gray-800">Get Help When Needed.</strong> Use the SOS button to instantly connect with help if you're in an unsafe situation.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="reveal">
+                        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-2xl text-center">
+                            <h4 class="text-2xl font-bold mb-4">Emergency SOS</h4>
+                            <p class="text-gray-600 mb-8">In an emergency, press and hold the button below for 3 seconds.</p>
+                            <button class="w-32 h-32 bg-red-500 text-white rounded-full flex items-center justify-center mx-auto sos-button">
+                                <span class="text-3xl font-bold">SOS</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="testimonials" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-sm font-bold uppercase text-blue-600 mb-2 reveal">Testimonials</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900 reveal">Trusted by Travelers Worldwide</h3>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-gray-50 p-8 rounded-xl reveal">
+                        <p class="text-gray-700 mb-6">"This app was a lifesaver during my solo trip through Southeast Asia. The local alerts gave me so much peace of mind!"</p>
+                        <div class="flex items-center">
+                            <img src="https://placehold.co/48x48/60A5FA/FFFFFF?text=AS" alt="User" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-bold text-gray-900">Anjali Sharma</p>
+                                <p class="text-sm text-gray-500">Solo Traveler</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-xl reveal" style="transition-delay: 200ms;">
+                        <p class="text-gray-700 mb-6">"The emergency contact feature is brilliant. My family felt much more at ease knowing they could be alerted if something went wrong."</p>
+                        <div class="flex items-center">
+                            <img src="https://placehold.co/48x48/34D399/FFFFFF?text=RM" alt="User" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-bold text-gray-900">Rohan Mehta</p>
+                                <p class="text-sm text-gray-500">Family Vacationer</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-xl reveal" style="transition-delay: 400ms;">
+                        <p class="text-gray-700 mb-6">"Navigating a new city was so much easier with the safe zone maps. I discovered amazing local spots I would have otherwise missed."</p>
+                        <div class="flex items-center">
+                            <img src="https://placehold.co/48x48/FBBF24/FFFFFF?text=PV" alt="User" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-bold text-gray-900">Priya Verma</p>
+                                <p class="text-sm text-gray-500">Backpacker</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-lg font-bold mb-4">SafeTravel</h4>
+                    <p class="text-gray-400">Your safety, our priority.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#features" class="text-gray-400 hover:text-white">Features</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                 <div>
+                    <h4 class="text-lg font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-700 pt-6 text-center text-gray-500">
+                &copy; 2025 Travelshield. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Mobile Menu Toggle ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- Header Style on Scroll ---
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('bg-white/80', 'backdrop-blur-sm', 'shadow-md');
+            } else {
+                header.classList.remove('bg-white/80', 'backdrop-blur-sm', 'shadow-md');
+            }
+        });
+
+        // --- Scroll Reveal Animation ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        revealElements.forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+
+</body>
+</html>

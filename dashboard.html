@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="en"> <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SafeTravel Dashboard</title>
+  <style>
+    :root{
+      --bg: #f7fbff;
+      --card: #ffffff;
+      --accent: #0765d6;
+      --accent-600: #0a5ac0;
+      --danger: #d64545;
+      --warning: #f97316; 
+      --muted: #6b7280;
+      --text: #072033;
+      --shadow: rgba(7,32,51,0.06);
+      --glass-border: #e7eef6;
+      --soft: #f1f5f9;
+      --radius: 10px;
+    }
+
+    /* NEW: Dark mode variables applied via .dark class on <html> */
+    html.dark :root{
+      --bg: #071424;
+      --card: #071a26;
+      --accent: #4ea8ff;
+      --accent-600: #1e90ff;
+      --danger: #ff6b6b;
+      --warning: #fb923c;
+      --muted: #94a3b8;
+      --text: #e6f0fb;
+      --shadow: rgba(0,0,0,0.6);
+      --glass-border: #0b2a3a;
+      --soft: #082233;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .wrap{max-width:1000px;margin:24px auto;padding:18px}
+    
+    header{
+      text-align:center; 
+      padding-bottom: 10px; 
+      border-bottom: 1px solid var(--glass-border);
+      margin-bottom: 24px;
+      /* NEW: Added for theme toggle positioning */
+      position: relative;
+    }
+    header h1{margin:0;font-size:1.75rem;line-height:1.2}
+    /* NEW: Made logo icon bigger and title use accent color */
+    #logoIcon { font-size: 2.5rem; margin: 0; }
+    #logoText { color: var(--accent); }
+
+    .muted{color:var(--muted)}
+    .small{font-size:0.85rem}
+    nav{margin-top:16px; display:flex; justify-content:center; align-items: center; gap: 8px; flex-wrap: wrap;}
+    
+    .navbtn{padding:8px 12px;border-radius:8px;border:0;background:#e6eefc;margin-right:6px;cursor:pointer;font-weight:600;color:var(--text);transition:transform .12s ease, background-color .12s ease, color .12s ease; text-decoration: none; display: inline-block;}
+    .navbtn:focus{outline:3px solid rgba(7,101,214,0.18); outline-offset:2px}
+    .navbtn:hover{transform:translateY(-1px)}
+    .navbtn.active{background:var(--accent);color:#fff;box-shadow:0 6px 16px rgba(7,32,51,0.08)}
+    
+    /* NEW: Theme toggle button styles */
+    #themeToggle {
+      min-width: 40px;
+      padding: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Positioned at the top right of the header */
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    #themeToggle svg { width: 20px; height: 20px; }
+    html.dark #themeIconSun { display: none; }
+    html:not(.dark) #themeIconMoon { display: none; }
+
+    .panel{display:block}
+    .hidden{display:none}
+    
+    .card{
+      background:var(--card);
+      padding:14px;
+      border-radius:var(--radius);
+      box-shadow:0 6px 18px var(--shadow);
+      margin-top:14px;
+      border:1px solid var(--glass-border);
+      /* NEW: Transition for hover effect */
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    /* NEW: Card hover lift effect on desktop */
+    @media (hover: hover) {
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px var(--shadow);
+      }
+    }
+
+    label{display:block;margin-top:8px;font-size:0.95rem}
+    input, textarea, select {width:100%;padding:10px;border-radius:8px;border:1px solid var(--glass-border);margin-top:6px;font-size:0.95rem;background:transparent;color:inherit}
+    textarea{resize:vertical;min-height:72px}
+    input:focus, textarea:focus, select:focus{outline: 3px solid rgba(7,101,214,0.12); border-color: var(--accent-600)}
+    .row{display:flex;gap:8px;align-items:center}
+    .row > *{flex:1;min-width:0}
+    @media (max-width:640px){ .row{flex-direction:column} header h1{font-size:1.5rem} .wrap{margin:14px;padding:12px} #themeToggle { top: -10px; } }
+    
+    button{
+      background:var(--accent);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:8px;
+      border:0;
+      cursor:pointer;
+      font-weight:600;
+      min-height:40px;
+      transition:transform .08s ease, box-shadow .12s ease, opacity .12s, background-color .12s ease;
+      /* NEW: Added subtle shadow to main buttons */
+      box-shadow: 0 4px 12px rgba(7, 101, 214, 0.2);
+    }
+    button:hover {
+       /* NEW: Enhanced hover shadow */
+      box-shadow: 0 6px 16px rgba(7, 101, 214, 0.3);
+      transform: translateY(-1px);
+    }
+    button:active{transform:translateY(1px)}
+    button:focus{outline:3px solid rgba(78,168,255,0.16); outline-offset:2px}
+    button[disabled]{opacity:.6;cursor:not-allowed}
+    button.danger{
+      background:var(--danger); 
+      color:#fff;
+      box-shadow: 0 4px 12px rgba(214, 69, 69, 0.2);
+    }
+    button.danger:hover {
+      box-shadow: 0 6px 16px rgba(214, 69, 69, 0.3);
+    }
+    
+    /* Fix for navbtn shadows */
+    .navbtn { box-shadow: none; }
+    .navbtn.active { box-shadow:0 6px 16px rgba(7,32,51,0.08) }
+    
+    .controls{display:flex;gap:6px}
+    .controls button, .controls a.navbtn {padding:8px 10px;border-radius:8px;background:var(--soft);color:var(--text);border:0;cursor:pointer;min-width:72px;font-weight:600; box-shadow: none;}
+    .controls button:hover, .controls a.navbtn:hover {transform:translateY(-1px); box-shadow: none;}
+    .controls button.sos, .controls a.navbtn.sos {background:var(--danger);color:#fff}
+    .status{margin-top:8px}
+    .list .item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border:1px solid var(--soft);margin-top:8px;gap:12px;background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0))}
+    .item .meta{font-size:0.95rem; word-break: break-word;}
+    .item .meta small{color:var(--muted)}
+    .hint{margin-top:8px;color:var(--muted)}
+    .mt{margin-top:14px}
+    footer{margin-top:18px;color:var(--muted);text-align:center}
+    pre{white-space:pre-wrap;word-break:break-word;padding:6px;border-radius:6px;background:transparent;border:1px dashed var(--soft)}
+    .text-center{text-align:center}
+    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(7,101,214,0.08);color:var(--accent);font-weight:700;font-size:0.85rem}
+    @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation: none!important;} }
+    
+    .alert-item { padding-left: 12px; }
+    .alert-info { border-left: 4px solid var(--accent); }
+    .alert-warning { border-left: 4px solid var(--warning); }
+    .alert-danger { border-left: 4px solid var(--danger); }
+    .alert-title { font-weight: 700; }
+    .alert-message { margin: 4px 0 0 0; }
+    
+    /* NEW: Animation keyframes */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* NEW: Staggered load-in animation for cards */
+    .load-in section.card {
+      opacity: 0; /* Start hidden */
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    /* Stagger the animations */
+    main > section.card:nth-child(1) { animation-delay: 0.1s; }
+    main > section.card:nth-child(2) { animation-delay: 0.2s; }
+    main > section.card:nth-child(3) { animation-delay: 0.3s; }
+    main > section.card:nth-child(4) { animation-delay: 0.4s; }
+    
+    aside > section.card:nth-child(1) { animation-delay: 0.1s; }
+    aside > section.card:nth-child(2) { animation-delay: 0.2s; }
+    
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    
+    <header>
+      
+      <h1 id="logoText">🛡️TravelShield</h1>
+      <p class="muted" style="margin-top: 4px;">Smart Tourist Safety Monitoring</p>
+      
+      <button id="themeToggle" class="navbtn" aria-label="Toggle dark mode" style="min-width: 40px; padding: 8px;">
+        <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+          <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.106a.75.75 0 010 1.06l-1.591 1.591a.75.75 0 11-1.06-1.061l1.591-1.591a.75.75 0 011.06 0zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25a.75.75 0 01.75.75zM17.803 16.197a.75.75 0 01-1.06 0l-1.591-1.591a.75.75 0 111.06-1.06l1.591 1.591a.75.75 0 010 1.06zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0v2.25a.75.75 0 01-.75.75zM5.106 17.894a.75.75 0 010-1.06l1.591-1.591a.75.75 0 111.061 1.06l-1.591 1.591a.75.75 0 01-1.06 0zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM6.197 5.197a.75.75 0 011.06 0l1.591 1.591a.75.75 0 11-1.06 1.06L6.197 6.257a.75.75 0 010-1.06z" />
+        </svg>
+        <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+          <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 004.463-.949.75.75 0 01.819.162l.146.292a.75.75 0 01-.05.992A11.25 11.25 0 0112 21a11.25 11.25 0 01-11.25-11.25 11.25 11.25 0 019.67-11.018l.292.146z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      
+      <nav>
+        <a href="index.html" class="navbtn" style="background: var(--soft); font-weight: 500;">&larr; Back to Home</a>
+        <button id="navUser" class="navbtn active" aria-pressed="true">User Dashboard</button>
+        <button id="navAdmin" class="navbtn" aria-pressed="false">Admin Dashboard</button>
+      </nav>
+    </header>
+
+    <main id="userView" class="panel" role="main" aria-labelledby="userViewTitle">
+      
+      <section class="card" aria-labelledby="alerts-title">
+        <h2 id="alerts-title">📢 Local Alerts</h2>
+        <div id="localAlertsList" class="list" aria-live="polite">
+          </div>
+      </section>
+      
+      <section class="card" aria-labelledby="reg-title">
+        <h2 id="reg-title">Register Tourist</h2>
+        <form id="regForm" autocomplete="off">
+          <label for="name">Full name
+            <input id="name" name="name" required />
+          </label>
+          <label for="aadhar">Aadhar (optional)
+            <input id="aadhar" name="aadhar" maxlength="12" inputmode="numeric" pattern="[0-9]*" />
+          </label>
+          <label for="phone">Phone
+            <input id="phone" name="phone" type="tel" inputmode="tel" pattern="[0-9]{10}" placeholder="10 digit phone" />
+          </label>
+          <label for="emergencyContact">Emergency contact
+            <input id="emergencyContact" name="emergencyContact" type="tel" inputmode="tel" pattern="[0-9]{10}" />
+          </label>
+          <label for="from">From (city)
+            <input id="from" name="from" />
+          </label>
+          <label for="to">Destination to visit
+            <input id="to" name="to" />
+          </label>
+          <label for="address">Address / Notes
+            <textarea id="address" name="address" rows="3"></textarea>
+          </label>
+          <div class="row" style="margin-top:12px">
+            <button type="submit">Register & Generate ID</button>
+            <button type="button" id="downloadDb">Download DB</button>
+          </div>
+        </form>
+        <div id="regStatus" class="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card" aria-labelledby="lookup-title">
+        <h2 id="lookup-title">Your ID / Lookup</h2>
+        <div class="row">
+          <input id="lookupId" placeholder="Enter your unique ID" />
+          <button id="lookupBtn">Lookup</button>
+        </div>
+        <div id="lookupResult" class="result" aria-live="polite"></div>
+      </section>
+
+      <section class="card" aria-labelledby="helpline-title">
+        <h2 id="helpline-title">🚨 Quick Helplines</h2>
+        <div class="list">
+          <div class="item">
+            <div class="meta"><strong>National Emergency</strong> (Police/Fire/Ambulance)</div>
+            <div class="controls"><a href="tel:112" class="navbtn sos">Call 112</a></div>
+          </div>
+          <div class="item">
+            <div class="meta"><strong>Police</strong></div>
+            <div class="controls"><a href="tel:100" class="navbtn" style="background:var(--accent-600); color:white; text-decoration:none;">Call 100</a></div>
+          </div>
+          <div class="item">
+            <div class="meta"><strong>Women Helpline</strong></div>
+            <div class="controls"><a href="tel:1091" class="navbtn" style="text-decoration:none;">Call 1091</a></div>
+          </div>
+          <div class="item">
+            <div class="meta"><strong>Ambulance</strong></div>
+            <div class="controls"><a href="tel:108" class="navbtn" style="text-decoration:none;">Call 108</a></div>
+          </div>
+        </div>
+        <p class="hint muted" style="margin-top:10px;">These are all-India numbers. Tapping will dial on a mobile device.</p>
+      </section>
+
+      <section class="card">
+        <h2>Registered Tourists (local)</h2>
+        <div id="usersList" class="list" aria-live="polite"></div>
+        <div class="hint muted">Click SOS to create an SOS entry. If you want to share it externally it will download a packet.</div>
+      </section>
+    </main>
+
+    <aside id="adminView" class="panel hidden" aria-labelledby="admin-title">
+      <section class="card">
+        <h2 id="admin-title">Admin Login</h2>
+        <div id="adminOnboard" class="muted small">If first time, default admin password is <strong>admin123</strong>. Change it after login.</div>
+        <div class="row" style="margin-top:8px">
+          <input id="adminPass" type="password" placeholder="Admin password" />
+          <button id="adminLogin">Login</button>
+        </div>
+        <div id="adminStatus" class="status" aria-live="polite"></div>
+      </section>
+
+      <section id="adminPanel" class="card hidden" aria-hidden="true">
+        <h2>Admin Dashboard</h2>
+        <div class="row">
+          <input id="adminSearch" placeholder="Search name / id / destination" />
+          <button id="adminSearchBtn">Search</button>
+          <button id="exportAll">Export users.json</button>
+          <button id="exportSOS">Export sos_logs.json</button>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="importFile" type="file" accept="application/json" style="display:none" />
+          <button id="importBtn">Import JSON</button>
+          <button id="logoutBtn" class="danger">Logout</button>
+        </div>
+
+        <h3 class="mt">Security</h3>
+        <div class="row">
+          <input id="newAdminPass" type="password" placeholder="New admin password" />
+          <button id="setAdminPassBtn">Change Password</button>
+        </div>
+        <div id="adminSecurityStatus" class="status" aria-live="polite"></div>
+        
+        <h3 class="mt">Broadcast Alert</h3>
+        <form id="alertForm" autocomplete="off">
+          <div class="row">
+            <input id="alertTitle" placeholder="Title (e.g., Heavy Traffic)" />
+            <select id="alertSeverity" style="flex: 0 1 120px; margin-top:6px;">
+              <option value="info">Info</option>
+              <option value="warning">Warning</option>
+              <option value="danger">Danger</option>
+            </select>
+          </div>
+          <textarea id="alertMessage" placeholder="Alert message..." rows="2" style="margin-top:8px;"></textarea>
+          <button type="submit" style="margin-top:8px; width:100%;">Broadcast Alert</button>
+        </form>
+        <div id="adminAlertStatus" class="status" aria-live="polite"></div>
+        
+        <h4 style="margin-bottom:0; margin-top: 16px;">Current Alerts</h4>
+        <div id="adminAlertsList" class="list"></div>
+
+        <h3 class="mt">Users</h3>
+        <div id="adminUsers" class="list"></div>
+
+        <h3 class="mt">SOS Logs</h3>
+        <div id="adminSOS" class="list"></div>
+      </section>
+    </aside>
+
+    <footer>
+      <small>Privacy: Aadhar is optional. Your information is Safe with Us</small>
+      <br>
+      <small style="font-size: 0.75rem;">&copy; 2025 SafeTravel. All Rights Reserved.</small>
+    </footer>
+  </div>
+
+  <script>
+  (function(){
+    // storage keys
+    const USERS_KEY = 'sts_users_v2';
+    const SOS_KEY = 'sts_sos_v2';
+    const ADMIN_HASH_KEY = 'sts_admin_hash_v2';
+    const ALERTS_KEY = 'sts_alerts_v2';
+    const THEME_KEY = 'sts_theme'; // NEW
+
+    // DOM
+    const navUser = document.getElementById('navUser');
+    const navAdmin = document.getElementById('navAdmin');
+    const userView = document.getElementById('userView');
+    const adminView = document.getElementById('adminView');
+    
+    // NEW: Theme DOM
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIconSun = document.getElementById('themeIconSun');
+    const themeIconMoon = document.getElementById('themeIconMoon');
+
+    // user dom
+    const regForm = document.getElementById('regForm');
+    const regStatus = document.getElementById('regStatus');
+    const usersList = document.getElementById('usersList');
+    const downloadDbBtn = document.getElementById('downloadDb');
+    const lookupBtn = document.getElementById('lookupBtn');
+    const lookupId = document.getElementById('lookupId');
+    const lookupResult = document.getElementById('lookupResult');
+    const localAlertsList = document.getElementById('localAlertsList');
+
+    // admin dom
+    const adminPass = document.getElementById('adminPass');
+    const adminLogin = document.getElementById('adminLogin');
+    const adminStatus = document.getElementById('adminStatus');
+    const adminPanel = document.getElementById('adminPanel');
+    const adminUsers = document.getElementById('adminUsers');
+    const adminSOS = document.getElementById('adminSOS');
+    const adminSearch = document.getElementById('adminSearch');
+    const adminSearchBtn = document.getElementById('adminSearchBtn');
+    const exportAll = document.getElementById('exportAll');
+    const exportSOS = document.getElementById('exportSOS');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const newAdminPass = document.getElementById('newAdminPass');
+    const setAdminPassBtn = document.getElementById('setAdminPassBtn');
+    const adminSecurityStatus = document.getElementById('adminSecurityStatus');
+    const alertForm = document.getElementById('alertForm');
+    const alertTitle = document.getElementById('alertTitle');
+    const alertSeverity = document.getElementById('alertSeverity');
+    const alertMessage = document.getElementById('alertMessage');
+    const adminAlertStatus = document.getElementById('adminAlertStatus');
+    const adminAlertsList = document.getElementById('adminAlertsList');
+
+    // NEW: Alert icons
+    const severityIcons = {
+      info: 'ℹ️',
+      warning: '⚠️',
+      danger: '🚨'
+    };
+
+    // helpers
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random()*16|0, v = c==='x'?r:(r&0x3|0x8);
+        return v.toString(16);
+      });
+    }
+    function loadJSON(key){ try{ return JSON.parse(localStorage.getItem(key)) || []; } catch(e){return []} }
+    function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+    function escapeHtml(s){
+      return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+
+    function formatDateISO(iso){
+      try { return new Date(iso).toLocaleString(); } catch(e) { return iso; }
+    }
+
+    function setStatus(el, text, timeout=4000){
+      if(!el) return;
+      el.textContent = text;
+      if(!el.hasAttribute('aria-live')) el.setAttribute('aria-live','polite');
+      if(timeout>0){
+        clearTimeout(el._statusTimer);
+        el._statusTimer = setTimeout(()=>{ if(el.textContent === text) el.textContent = ''; }, timeout);
+      }
+    }
+
+    function downloadJSON(filename, obj){
+      const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 2000);
+    }
+
+    async function sha256(message) {
+      const enc = new TextEncoder();
+      const msgUint = enc.encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function ensureAdmin() {
+      if (!localStorage.getItem(ADMIN_HASH_KEY)) {
+        const defaultPass = 'admin123';
+        const h = await sha256(defaultPass);
+        localStorage.setItem(ADMIN_HASH_KEY, h);
+      }
+    }
+
+    async function setAdminPassword(newPass){
+      if(!newPass) throw new Error('Empty password');
+      const h = await sha256(newPass);
+      localStorage.setItem(ADMIN_HASH_KEY, h);
+      return true;
+    }
+
+    async function copyToClipboard(text){
+      if(!text) return false;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        try { await navigator.clipboard.writeText(text); return true; }
+        catch(e){ /* fallback below */ }
+      }
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      } catch(e){
+        document.body.removeChild(ta);
+        return false;
+      }
+    }
+    
+    // NEW: Theme functions
+    function updateThemeIcon(isDark) {
+      themeIconSun.style.display = isDark ? 'none' : 'block';
+      themeIconMoon.style.display = isDark ? 'block' : 'none';
+    }
+    
+    function setTheme(isDark) {
+      document.documentElement.classList.toggle('dark', isDark);
+      localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+      updateThemeIcon(isDark);
+    }
+    
+    function initTheme() {
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      let isDark = savedTheme === 'dark' || (savedTheme === null && systemPrefersDark);
+      setTheme(isDark);
+    }
+    
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      setTheme(!isDark);
+    });
+
+    // UI navigation
+    function showUserView(){
+      navUser.classList.add('active'); navUser.setAttribute('aria-pressed','true');
+      navAdmin.classList.remove('active'); navAdmin.setAttribute('aria-pressed','false');
+      userView.classList.remove('hidden'); adminView.classList.add('hidden');
+    }
+    function showAdminView(){
+      navAdmin.classList.add('active'); navAdmin.setAttribute('aria-pressed','true');
+      navUser.classList.remove('active'); navUser.setAttribute('aria-pressed','false');
+      adminView.classList.remove('hidden'); userView.classList.add('hidden');
+    }
+    navUser.addEventListener('click', showUserView);
+    navAdmin.addEventListener('click', showAdminView);
+
+    // render users
+    function renderUsers(){
+      const users = loadJSON(USERS_KEY);
+      usersList.innerHTML = '';
+      if(users.length === 0){
+        usersList.innerHTML = '<div class="muted">No users registered.</div>';
+        return;
+      }
+      users.forEach(u => {
+        const div = document.createElement('div'); div.className='item';
+        div.innerHTML = `
+          <div class="meta">
+            <div><strong>${escapeHtml(u.name)}</strong> <small>(${escapeHtml(u.id).slice(0,8)})</small></div>
+            <div class="muted">Dest: ${escapeHtml(u.to||'-')} • Reg: ${formatDateISO(u.createdAt)}</div>
+          </div>
+          <div class="controls">
+            <button class="sos">SOS</button>
+            <button class="copy">Copy ID</button>
+          </div>
+        `;
+        usersList.appendChild(div);
+
+        div.querySelector('.copy').addEventListener('click', async () => {
+          const ok = await copyToClipboard(u.id);
+          setStatus(regStatus, ok ? 'ID copied to clipboard' : 'Could not copy ID — please copy manually', 2500);
+        });
+
+        div.querySelector('.sos').addEventListener('click', () => sendSOS(u));
+      });
+    }
+
+    // register
+    regForm.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const fd = new FormData(regForm);
+      const user = {
+        id: uuidv4(),
+        name: (fd.get('name') || '').trim(),
+        aadhar: (fd.get('aadhar') || '').trim(),
+        phone: (fd.get('phone') || '').trim(),
+        emergencyContact: (fd.get('emergencyContact') || '').trim(),
+        from: (fd.get('from') || '').trim(),
+        to: (fd.get('to') || '').trim(),
+        address: (fd.get('address') || '').trim(),
+        createdAt: new Date().toISOString()
+      };
+      if(!user.name){
+        setStatus(regStatus, 'Name is required', 3000);
+        return;
+      }
+      const users = loadJSON(USERS_KEY);
+      users.push(user);
+      saveJSON(USERS_KEY, users);
+      setStatus(regStatus, 'Registered. Your Unique ID: ' + user.id, 7000);
+      renderUsers();
+      regForm.reset();
+    });
+
+    downloadDbBtn.addEventListener('click', () => {
+      const data = loadJSON(USERS_KEY);
+      downloadJSON(`users_export_${new Date().toISOString().slice(0,10)}.json`, data);
+      setStatus(regStatus, 'Users database exported (download started)', 3000);
+    });
+
+    lookupBtn.addEventListener('click', () => {
+      const id = lookupId.value.trim(); if(!id){ setStatus(lookupResult, 'Enter ID to lookup', 2500); return; }
+      const users = loadJSON(USERS_KEY);
+      const u = users.find(x => x.id === id);
+      if(u){
+        lookupResult.innerHTML = `
+          <div class="item" style="margin-top:12px; background-color: var(--soft);">
+            <div class="meta">
+              <div><strong>${escapeHtml(u.name)}</strong></div>
+              <div class="muted">Dest: ${escapeHtml(u.to||'-')}</div>
+            </div>
+            <div class="controls">
+              <button class="sos" id="lookupSosBtn">🚨 Send SOS</button>
+            </div>
+          </div>
+          <pre>${escapeHtml(JSON.stringify(u, null, 2))}</pre>
+        `;
+        document.getElementById('lookupSosBtn').addEventListener('click', () => sendSOS(u));
+      } else {
+        lookupResult.textContent = 'ID not found locally.';
+      }
+    });
+
+    async function sendSOS(user){
+      setStatus(regStatus, 'Preparing SOS...', 3000);
+      let loc = {lat:null, lng:null, accuracy:null};
+      if(navigator.geolocation){
+        try {
+          const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, {timeout:8000}));
+          loc.lat = pos.coords.latitude;
+          loc.lng = pos.coords.longitude;
+          loc.accuracy = pos.coords.accuracy;
+        } catch(e) {}
+      }
+      const sos = {
+        id: user.id,
+        name: user.name,
+        phone: user.phone || null,
+        emergencyContact: user.emergencyContact || null,
+        timestamp: new Date().toISOString(),
+        location: loc,
+        resolved: false,
+        note: 'SOS triggered from user UI'
+      };
+      const logs = loadJSON(SOS_KEY);
+      logs.push(sos);
+      saveJSON(SOS_KEY, logs);
+
+      downloadJSON(`SOS_${user.id}.json`, sos);
+
+      setStatus(regStatus, 'SOS recorded locally and packet downloaded. Share with authorities.', 7000);
+      renderAdminSOS();
+    }
+
+    // Admin login
+    adminLogin.addEventListener('click', async () => {
+      const pass = adminPass.value || '';
+      if(!pass) return setStatus(adminStatus, 'Enter password', 2500);
+      const h = await sha256(pass);
+      const stored = localStorage.getItem(ADMIN_HASH_KEY);
+      if(h === stored){
+        setStatus(adminStatus, 'Login successful', 2500);
+        adminPanel.classList.remove('hidden');
+        adminPanel.setAttribute('aria-hidden','false');
+        adminPass.value = '';
+        renderAdminUsers();
+        renderAdminSOS();
+        renderAdminAlerts();
+        showAdminView();
+      } else {
+        setStatus(adminStatus, 'Wrong password', 3000);
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      adminPanel.classList.add('hidden');
+      adminPanel.setAttribute('aria-hidden','true');
+      setStatus(adminStatus, 'Logged out', 2500);
+    });
+    
+    setAdminPassBtn.addEventListener('click', async () => {
+      const newPass = newAdminPass.value;
+      if (!newPass) {
+        return setStatus(adminSecurityStatus, 'Enter a new password', 2500);
+      }
+      if (newPass.length < 6) {
+        return setStatus(adminSecurityStatus, 'Password must be at least 6 characters', 3000);
+      }
+      if (confirm('Change admin password? This will log you out.')) {
+        try {
+          await setAdminPassword(newPass);
+          setStatus(adminStatus, 'Password changed. Please log in again.', 4000);
+          newAdminPass.value = '';
+          adminPanel.classList.add('hidden');
+          adminPanel.setAttribute('aria-hidden','true');
+        } catch (e) {
+          setStatus(adminSecurityStatus, 'Error changing password', 3000);
+        }
+      }
+    });
+
+    function renderAdminUsers(filter) {
+      const users = loadJSON(USERS_KEY);
+      const list = filter ? users.filter(u => JSON.stringify(u).toLowerCase().includes(filter.toLowerCase())) : users;
+      adminUsers.innerHTML = '';
+      if(list.length === 0){ adminUsers.innerHTML = '<div class="muted">No users</div>'; return; }
+      list.forEach(u => {
+        const d = document.createElement('div'); d.className='item';
+        d.innerHTML = `
+          <div class="meta">
+            <div><strong>${escapeHtml(u.name)}</strong> <small>${escapeHtml(u.id)}</small></div>
+            <div class="muted">Dest: ${escapeHtml(u.to||'-')} • ${formatDateISO(u.createdAt)}</div>
+          </div>
+          <div class="controls">
+            <button class="view">View</button>
+            <button class="export">Export</button>
+            <button class="del danger">Delete</button>
+          </div>
+        `;
+        adminUsers.appendChild(d);
+
+        d.querySelector('.view').addEventListener('click', () => {
+          alert(JSON.stringify(u, null, 2));
+        });
+        d.querySelector('.export').addEventListener('click', () => {
+          downloadJSON(`user_${u.id}.json`, u);
+          setStatus(adminStatus, 'User exported', 2500);
+        });
+        d.querySelector('.del').addEventListener('click', () => {
+          if(!confirm('Delete this user?')) return;
+          const usersAll = loadJSON(USERS_KEY).filter(x => x.id !== u.id);
+          saveJSON(USERS_KEY, usersAll);
+          renderAdminUsers(adminSearch.value);
+          renderUsers();
+          setStatus(adminStatus, 'User deleted', 2500);
+        });
+      });
+    }
+
+    function renderAdminSOS() {
+      const logs = loadJSON(SOS_KEY).slice().reverse(); // newest first
+      adminSOS.innerHTML = '';
+      if(logs.length === 0){ adminSOS.innerHTML = '<div class="muted">No SOS logs</div>'; return; }
+      logs.forEach((s) => {
+        const d = document.createElement('div'); d.className='item';
+        d.innerHTML = `
+          <div class="meta">
+            <div><strong>${escapeHtml(s.name||s.id)}</strong> <small>${escapeHtml(s.id)}</small></div>
+            <div class="muted">${formatDateISO(s.timestamp)} • Resolved: ${s.resolved ? 'Yes' : 'No'}</div>
+          </div>
+          <div class="controls">
+            <button class="view">View</button>
+            <button class="resolve">${s.resolved ? 'Unresolve' : 'Mark resolved'}</button>
+          </div>
+        `;
+        adminSOS.appendChild(d);
+
+        d.querySelector('.view').addEventListener('click', () => {
+          alert(JSON.stringify(s, null, 2));
+        });
+        d.querySelector('.resolve').addEventListener('click', () => {
+          const logsAll = loadJSON(SOS_KEY);
+          const idx = logsAll.findIndex(x => x.timestamp === s.timestamp && x.id === s.id);
+          if(idx >= 0){
+            logsAll[idx].resolved = !logsAll[idx].resolved;
+            saveJSON(SOS_KEY, logsAll);
+            renderAdminSOS();
+            setStatus(adminStatus, logsAll[idx].resolved ? 'Marked resolved' : 'Marked unresolved', 2500);
+          }
+        });
+      });
+    }
+    
+    function renderLocalAlerts() {
+      const alerts = loadJSON(ALERTS_KEY).slice().reverse();
+      localAlertsList.innerHTML = '';
+      if (alerts.length === 0) {
+        localAlertsList.innerHTML = '<div class="muted">No current alerts.</div>';
+        return;
+      }
+      alerts.forEach(a => {
+        const d = document.createElement('div');
+        d.className = `item alert-item alert-${escapeHtml(a.severity)}`;
+        d.innerHTML = `
+          <div class="meta">
+            <div class="alert-title">${severityIcons[a.severity] || ''} ${escapeHtml(a.title)}</div>
+            <p class="alert-message">${escapeHtml(a.message)}</p>
+            <small class="muted">Issued: ${formatDateISO(a.createdAt)}</small>
+          </div>
+        `;
+        localAlertsList.appendChild(d);
+      });
+    }
+
+    function renderAdminAlerts() {
+      const alerts = loadJSON(ALERTS_KEY).slice().reverse();
+      adminAlertsList.innerHTML = '';
+      if (alerts.length === 0) {
+        adminAlertsList.innerHTML = '<div class="muted">No alerts broadcasted.</div>';
+        return;
+      }
+      alerts.forEach(a => {
+        const d = document.createElement('div');
+        d.className = `item alert-item alert-${escapeHtml(a.severity)}`;
+        d.innerHTML = `
+          <div class="meta">
+            <div class="alert-title">${severityIcons[a.severity] || ''} ${escapeHtml(a.title)}</div>
+            <p class="alert-message" style="font-size: 0.9rem;">${escapeHtml(a.message)}</p>
+            <small class="muted">${formatDateISO(a.createdAt)}</small>
+          </div>
+          <div class="controls">
+            <button class="del-alert danger">Delete</button>
+          </div>
+        `;
+        adminAlertsList.appendChild(d);
+        
+        d.querySelector('.del-alert').addEventListener('click', () => {
+          if (!confirm('Delete this alert?')) return;
+          const allAlerts = loadJSON(ALERTS_KEY).filter(x => x.id !== a.id);
+          saveJSON(ALERTS_KEY, allAlerts);
+          renderAdminAlerts();
+          renderLocalAlerts();
+          setStatus(adminAlertStatus, 'Alert deleted', 2500);
+        });
+      });
+    }
+
+    alertForm.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const title = alertTitle.value.trim();
+      const message = alertMessage.value.trim();
+      if (!title || !message) {
+        return setStatus(adminAlertStatus, 'Title and message are required', 3000);
+      }
+      const alert = {
+        id: uuidv4(),
+        title: title,
+        message: message,
+        severity: alertSeverity.value,
+        createdAt: new Date().toISOString()
+      };
+      const alerts = loadJSON(ALERTS_KEY);
+      alerts.push(alert);
+      saveJSON(ALERTS_KEY, alerts);
+      
+      setStatus(adminAlertStatus, 'Alert broadcasted successfully', 2500);
+      alertForm.reset();
+      renderAdminAlerts();
+      renderLocalAlerts();
+    });
+
+    adminSearchBtn.addEventListener('click', () => {
+      renderAdminUsers(adminSearch.value.trim());
+    });
+
+    exportAll.addEventListener('click', () => {
+      downloadJSON(`users_export_${new Date().toISOString().slice(0,10)}.json`, loadJSON(USERS_KEY));
+      setStatus(adminStatus, 'Users export started', 2500);
+    });
+    exportSOS.addEventListener('click', () => {
+      downloadJSON(`sos_logs_${new Date().toISOString().slice(0,10)}.json`, loadJSON(SOS_KEY));
+      setStatus(adminStatus, 'SOS logs export started', 2500);
+    });
+
+    importBtn.addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', (ev) => {
+      const f = ev.target.files[0]; if(!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        try {
+          const parsed = JSON.parse(r.result);
+          if(!Array.isArray(parsed)){ alert('JSON must be an array of users or SOS logs'); return; }
+          if(parsed.length === 0){ alert('Empty array'); return; }
+
+          const first = parsed[0];
+          const isSOS = first.timestamp && ('location' in first);
+          const isUserLike = first.id && first.name !== undefined;
+
+          if(isSOS){
+            const existing = loadJSON(SOS_KEY);
+            const newLogs = parsed.filter(p => !existing.some(e => e.id === p.id && e.timestamp === p.timestamp));
+            saveJSON(SOS_KEY, existing.concat(newLogs));
+            renderAdminSOS();
+            alert(`Imported ${newLogs.length} new SOS logs.`);
+          } else if(isUserLike){
+            const existing = loadJSON(USERS_KEY);
+            const ids = new Set(existing.map(x => x.id));
+            const merged = existing.concat(parsed.filter(p => !ids.has(p.id)));
+            saveJSON(USERS_KEY, merged);
+            renderAdminUsers();
+            renderUsers();
+            alert('Imported users');
+          } else {
+            alert('Unrecognized JSON array format (not users or SOS logs)');
+          }
+        } catch(e){
+          alert('Invalid JSON: ' + (e && e.message ? e.message : 'parse error'));
+        } finally {
+          importFile.value = '';
+        }
+      };
+      r.readAsText(f);
+    });
+
+    // init
+    (async function init(){
+      // NEW: Run theme init first to prevent flash
+      initTheme();
+    
+      await ensureAdmin();
+      
+      if (loadJSON(ALERTS_KEY).length === 0) {
+        const exampleAlert = {
+          id: uuidv4(),
+          title: "Heavy Traffic Warning",
+          message: "Due to a local festival, the road near MG Road is experiencing heavy traffic. Please use alternate routes.",
+          severity: "warning",
+          createdAt: new Date().toISOString()
+        };
+        saveJSON(ALERTS_KEY, [exampleAlert]);
+      }
+      
+      renderUsers();
+      renderAdminUsers();
+      renderAdminSOS();
+      renderLocalAlerts();
+      renderAdminAlerts();
+      
+      // NEW: Add load-in animation class
+      setTimeout(() => document.body.classList.add('load-in'), 50);
+
+      window.sts = {
+        users: () => loadJSON(USERS_KEY),
+        sos: () => loadJSON(SOS_KEY),
+        alerts: () => loadJSON(ALERTS_KEY),
+        setAdmin: async (newPass) => { await setAdminPassword(newPass); alert('admin password changed'); }
+      };
+    })();
+
+  })();
+  </script>
+</body>
+</html>
